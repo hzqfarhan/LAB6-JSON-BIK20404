@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 06 - Question 2</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7fb; color: #243248; padding: 40px 16px; }
+        main { max-width: 750px; margin: auto; padding: 28px; background: white; border: 1px solid #dbe3ef; border-radius: 10px; }
+        h1 { color: #174c82; margin-top: 0; }
+        #results p { padding: 12px; background: #f4f7fb; border-radius: 6px; }
+        .note { font-size: 14px; color: #5c687a; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Question 2: Book Details</h1>
+        <p class="note">Open Inspect (F12) &gt; Console to view the same results.</p>
+        <div id="results">Loading books...</div>
+    </main>
+
+    <script>
+        // Asynchronously load the JSON file made in Question 1.
+        // Uses async/await and response, without nested callbacks or loops.
+        async function displayBookDetails() {
+            const results = document.getElementById("results");
+
+            try {
+                const response = await fetch("books.json");
+                if (!response.ok) throw new Error("Cannot load books.json");
+
+                const data = await response.json();
+                const books = data.Books;
+                results.textContent = "";
+
+                // (a) Title of the first book.
+                const firstTitle = "(a) First book title: " + books[0].title;
+                console.log(firstTitle);
+                const titleLine = document.createElement("p");
+                titleLine.textContent = firstTitle;
+                results.appendChild(titleLine);
+
+                // (b) Author of the second book.
+                const secondAuthor = "(b) Second book author: " + books[1].author;
+                console.log(secondAuthor);
+                const authorLine = document.createElement("p");
+                authorLine.textContent = secondAuthor;
+                results.appendChild(authorLine);
+
+                // (c) Genres of all books: one loop, no nested loops.
+                for (let i = 0; i < books.length; i++) {
+                    const genreLine = "(c) Book " + (i + 1) + " genres: " + books[i].genres.join(", ");
+                    console.log(genreLine);
+                    const paragraph = document.createElement("p");
+                    paragraph.textContent = genreLine;
+                    results.appendChild(paragraph);
+                }
+            } catch (error) {
+                results.textContent = "Error: " + error.message;
+                console.error(error);
+            }
+        }
+
+        displayBookDetails();
+    </script>
+</body>
+</html>

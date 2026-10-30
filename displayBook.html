@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 06 - Question 3</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7fb; color: #243248; padding: 40px 16px; }
+        main { max-width: 750px; margin: auto; padding: 28px; background: white; border: 1px solid #dbe3ef; border-radius: 10px; }
+        h1 { color: #174c82; margin-top: 0; }
+        label { display: block; margin: 18px 0 8px; font-weight: bold; }
+        select { width: 100%; padding: 11px; border: 1px solid #9aaec7; border-radius: 6px; font-size: 16px; }
+        #details { margin-top: 20px; padding: 16px; background: #f4f7fb; border: 1px solid #dbe3ef; border-radius: 6px; }
+        #details p { margin-bottom: 8px; }
+        #status { color: #59697d; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Question 3: Book Records</h1>
+        <p id="status">Loading books...</p>
+
+        <label for="bookSelect">Select a book title:</label>
+        <select id="bookSelect" onchange="displaySelectedBook()" disabled>
+            <option value="">-- Select a book --</option>
+        </select>
+
+        <div id="details" hidden>
+            <h2 id="bookTitle"></h2>
+            <p><strong>Author:</strong> <span id="bookAuthor"></span></p>
+            <p><strong>Publication Year:</strong> <span id="bookYear"></span></p>
+            <p><strong>Genres:</strong> <span id="bookGenres"></span></p>
+        </div>
+    </main>
+
+    <script>
+        // CHANGE THIS URL after uploading books.json to your public GitHub repo.
+        const GITHUB_JSON_URL =
+            "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPOSITORY/main/books.json";
+
+        // Local preview: add ?preview=local to the address when using Live Server.
+        // Remove ?preview=local for the real GitHub-fetch result in Q3.
+        const localPreview = new URLSearchParams(window.location.search).get("preview") === "local";
+        const jsonURL = localPreview ? "books.json" : GITHUB_JSON_URL;
+        let books = [];
+
+        // An asynchronous function that fetches and parses JSON.
+        // There are no nested .then() calls or nested loops.
+        async function loadBooks() {
+            const status = document.getElementById("status");
+
+            try {
+                if (jsonURL.includes("YOUR_USERNAME")) {
+                    throw new Error("Change GITHUB_JSON_URL to your GitHub raw JSON URL.");
+                }
+
+                const response = await fetch(jsonURL);
+                if (!response.ok) throw new Error("HTTP " + response.status);
+
+                const data = await response.json();
+                if (!Array.isArray(data.Books)) throw new Error("Books array not found in JSON.");
+
+                books = data.Books;
+                const bookSelect = document.getElementById("bookSelect");
+
+                for (let i = 0; i < books.length; i++) {
+                    const option = document.createElement("option");
+                    option.value = books[i].title;
+                    option.textContent = books[i].title;
+                    bookSelect.appendChild(option);
+                }
+
+                bookSelect.disabled = false;
+                status.textContent = localPreview
+                    ? "Local preview only (not the final GitHub fetch)."
+                    : "Successfully fetched " + books.length + " books from GitHub.";
+            } catch (error) {
+                status.textContent = "Error: " + error.message;
+                console.error(error);
+            }
+        }
+
+        // Separate named callback, not a nested function.
+        function titleMatches(book) {
+            return book.title === document.getElementById("bookSelect").value;
+        }
+
+        // Find a matching title, then show all requested details.
+        function displaySelectedBook() {
+            const selectedBook = books.find(titleMatches);
+            const details = document.getElementById("details");
+
+            if (!selectedBook) {
+                details.hidden = true;
+                return;
+            }
+
+            document.getElementById("bookTitle").textContent = selectedBook.title;
+            document.getElementById("bookAuthor").textContent = selectedBook.author;
+            document.getElementById("bookYear").textContent = selectedBook.publicationYear;
+            document.getElementById("bookGenres").textContent = selectedBook.genres.join(", ");
+            details.hidden = false;
+        }
+
+        loadBooks();
+    </script>
+</body>
+</html>
