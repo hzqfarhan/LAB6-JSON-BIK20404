@@ -9,7 +9,6 @@ This is a complete solution to **Lab 06 - JSON.docx**, using the lecturer's `stu
 | `books.json` | Q1: JSON collection with the two specified books. |
 | `bookDetails.html` | Q2: Fetch the JSON asynchronously and print the first title, second author and all genres on screen and in Console. |
 | `displayBook.html` | Q3: Asynchronous `fetch()` from GitHub, select a title and display its full book record. |
-| `Lab06_Answer_Report.docx` | A Word submission report with code excerpts and screenshot evidence (Q3 is a **local preview**, until you connect GitHub). |
 
 The JavaScript uses `async` / `await`, explicitly uses the `response` object, and **does not use nested `.then()` callbacks or nested loops**. The `Books` array and `genres` arrays are still present because the required JSON structure naturally contains objects and arrays.
 
